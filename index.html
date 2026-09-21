@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- TODO: fill in for search engines and link previews -->
+<title>HIRaD: [Paper Title]</title>
+<meta name="description" content="[One-sentence summary of the paper]">
+<meta property="og:title" content="HIRaD: [Paper Title]">
+<meta property="og:description" content="[One-sentence summary of the paper]">
+<meta property="og:image" content="static/teaser.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #FBFCFD;
+    --ink: #14213D;
+    --ink-soft: #4A5670;
+    --rule: #DDE4EA;
+    --wash: #F0F4F7;
+    --signal: #0E7C7B;      /* radar teal: links, posterior curve */
+    --residual: #E8A33D;    /* amber: the deviation, "ours" row */
+    --serif: "STIX Two Text", "Times New Roman", Times, serif;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --measure: 46rem;
+    --wide: 60rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0F1729;
+      --ink: #E9EEF5;
+      --ink-soft: #9FACC2;
+      --rule: #27334A;
+      --wash: #17223A;
+      --signal: #4FC4C1;
+      --residual: #F0B75E;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.125rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, video, svg { max-width: 100%; display: block; }
+  a { color: var(--signal); text-underline-offset: 0.18em; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .column { width: min(100% - 2.5rem, var(--measure)); margin-inline: auto; }
+  .column-wide { width: min(100% - 2.5rem, var(--wide)); margin-inline: auto; }
+
+  /* ---------- Header ---------- */
+  .masthead { padding: 4.5rem 0 2.5rem; text-align: center; }
+  .venue {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin: 0 0 1.25rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 auto 1.75rem;
+    max-width: 22em;
+    text-wrap: balance;
+  }
+  .authors {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem 1.5rem;
+    font-size: 1.15rem;
+  }
+  .authors a { color: var(--ink); text-decoration-color: var(--rule); }
+  .authors a:hover { text-decoration-color: var(--signal); }
+  .authors sup, .affiliations sup { font-family: var(--sans); font-size: 0.7em; color: var(--ink-soft); }
+  .affiliations, .notes {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin: 0.25rem 0;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .links a {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+  }
+  .links a:hover { background: var(--signal); border-color: var(--signal); }
+  .links a[aria-disabled="true"] {
+    background: transparent;
+    color: var(--ink-soft);
+    border-color: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Teaser ---------- */
+  .teaser { margin: 1.5rem auto 0; }
+  .teaser figure { margin: 0; }
+  .teaser-art {
+    background: var(--wash);
+    border-radius: 14px;
+    padding: 1.25rem 1rem 0.5rem;
+  }
+  .teaser-art .prior { stroke: var(--ink-soft); stroke-dasharray: 6 6; }
+  .teaser-art .posterior {
+    stroke: var(--signal);
+    stroke-dasharray: 1400;
+    stroke-dashoffset: 1400;
+    animation: trace 2.2s ease-out 0.3s forwards;
+  }
+  .teaser-art .gap { fill: var(--residual); opacity: 0; animation: reveal 0.8s ease-out 1.9s forwards; }
+  .teaser-art text { font-family: var(--sans); font-size: 15px; fill: var(--ink-soft); }
+  .teaser-art .gap-label { fill: var(--ink); font-weight: 500; opacity: 0; animation: reveal 0.8s ease-out 2.1s forwards; }
+  @keyframes trace { to { stroke-dashoffset: 0; } }
+  @keyframes reveal { to { opacity: var(--to, 1); } }
+  .teaser-art .gap { --to: 0.35; }
+  @media (prefers-reduced-motion: reduce) {
+    .teaser-art .posterior { animation: none; stroke-dashoffset: 0; }
+    .teaser-art .gap { animation: none; opacity: 0.35; }
+    .teaser-art .gap-label { animation: none; opacity: 1; }
+    html { scroll-behavior: auto; }
+  }
+
+  figcaption {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-top: 0.9rem;
+    text-align: left;
+  }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Sections ---------- */
+  main section { padding: 3.25rem 0 0; }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.7rem;
+    line-height: 1.25;
+    margin: 0 0 1rem;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 2rem 0 0.5rem;
+  }
+  p { margin: 0 0 1.1rem; }
+  .abstract p { text-align: justify; hyphens: auto; }
+
+  .tldr {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    font-style: italic;
+    text-align: center;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  /* Media slots: replace the inner .slot div with <img> or <video> */
+  .slot {
+    display: grid;
+    place-items: center;
+    min-height: 16rem;
+    padding: 1.5rem;
+    border: 1.5px dashed var(--rule);
+    border-radius: 12px;
+    background: var(--wash);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .slot.short { min-height: 10rem; }
+  figure { margin: 1.75rem 0 0; }
+  figure img, figure video { border-radius: 12px; width: 100%; }
+
+  /* Contributions */
+  .contributions { padding-left: 1.3rem; margin: 0; }
+  .contributions li { margin-bottom: 0.6rem; padding-left: 0.3rem; }
+  .contributions li::marker { color: var(--signal); }
+
+  /* Results table */
+  .table-scroll { overflow-x: auto; margin-top: 1.5rem; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    padding-top: 0.75rem;
+  }
+  th, td { padding: 0.55rem 0.9rem; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { font-weight: 600; border-bottom: 1px solid var(--ink); }
+  tbody tr.ours td {
+    border-top: 1px solid var(--rule);
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--residual);
+  }
+
+  /* Qualitative examples */
+  .examples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1.75rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .example { margin: 0; }
+  .example dl {
+    margin: 0.85rem 0 0;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .example dt { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.6rem; }
+  .example dd { margin: 0.1rem 0 0; }
+  .example dd.pred { border-left: 3px solid var(--residual); padding-left: 0.6rem; }
+
+  /* Video */
+  .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--wash); }
+  .video-frame iframe, .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-frame .slot { position: absolute; inset: 0; min-height: 0; border-radius: 12px; }
+
+  /* BibTeX */
+  .bibtex { position: relative; margin-top: 1rem; }
+  .bibtex pre {
+    margin: 0;
+    padding: 1.25rem 1.25rem;
+    background: var(--wash);
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .bibtex button {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    cursor: pointer;
+  }
+  .bibtex button:hover { border-color: var(--signal); color: var(--signal); }
+
+  footer {
+    margin-top: 4.5rem;
+    padding: 2rem 0 3rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  footer p { margin: 0.3rem 0; }
+
+  @media (max-width: 40rem) {
+    body { font-size: 1.05rem; }
+    .masthead { padding-top: 3rem; }
+    .tldr { font-size: 1.15rem; }
+    .abstract p { text-align: left; }
+  }
+</style>
+</head>
+
+<body>
+
+<header class="masthead">
+  <div class="column-wide">
+    <!-- TODO: venue line. Delete this <p> until the paper is public if you prefer. -->
+    <p class="venue">[Venue Year]</p>
+
+    <h1>HIRaD: [Paper Title]</h1>
+
+    <!-- TODO: authors. Superscript numbers map to affiliations; * marks equal contribution. -->
+    <ul class="authors">
+      <li><a href="#">[First Author]</a><sup>1</sup></li>
+      <li><a href="#">[Second Author]</a><sup>1</sup></li>
+      <li><a href="#">[Third Author]</a><sup>2</sup></li>
+      <li><a href="#">[Last Author]</a><sup>1</sup></li>
+    </ul>
+    <p class="affiliations"><sup>1</sup>[Affiliation One] &nbsp; <sup>2</sup>[Affiliation Two]</p>
+    <p class="notes">[Optional: *Equal contribution, †Corresponding author]</p>
+
+    <!-- TODO: set href on each link. Keep aria-disabled="true" on anything not yet released
+         (renders as an outlined, unclickable pill), and remove the attribute when it goes live. -->
+    <ul class="links">
+      <li><a href="static/paper.pdf">Paper</a></li>
+      <li><a href="#" aria-disabled="true">arXiv (coming soon)</a></li>
+      <li><a href="https://github.com/[user]/[repo]">Code</a></li>
+      <li><a href="#" aria-disabled="true">Dataset (coming soon)</a></li>
+      <li><a href="#video">Video</a></li>
+      <li><a href="#bibtex">BibTeX</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== Teaser =====
+       The SVG below is a stand-in that sketches the core idea (posterior departing from the prior).
+       Replace the whole .teaser-art div with:  <img src="static/teaser.png" alt="...">  -->
+  <div class="teaser column-wide">
+    <figure>
+      <div class="teaser-art">
+        <svg viewBox="0 0 880 250" role="img" aria-label="Placeholder sketch: a posterior latent trajectory departs from the predicted prior during a hidden interaction, and the gap between them is the residual.">
+          <path class="gap" d="M300,150 C360,125 400,60 450,55 C510,50 540,120 580,150 C480,110 400,110 300,150 Z"/>
+          <path class="prior" fill="none" stroke-width="2.5" d="M20,150 C120,110 200,190 300,150 C400,110 480,110 580,150 S760,190 860,150"/>
+          <path class="posterior" fill="none" stroke-width="3" stroke-linecap="round" d="M20,150 C120,110 200,190 300,150 C360,125 400,60 450,55 C510,50 540,120 580,150 S760,190 860,150"/>
+          <text class="gap-label" x="440" y="100" text-anchor="middle">residual</text>
+          <text x="20" y="232">predicted (prior)</text>
+          <text x="860" y="232" text-anchor="end">observed (posterior)</text>
+          <line x1="150" y1="227" x2="200" y2="227" class="prior" stroke-width="2.5"/>
+          <line x1="660" y1="227" x2="710" y2="227" stroke="var(--signal)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <figcaption><b>Figure 1.</b> [Teaser caption: what the reader should take away from this figure.]</figcaption>
+    </figure>
+  </div>
+
+  <!-- ===== TL;DR ===== -->
+  <section>
+    <div class="column">
+      <p class="tldr">[TL;DR: one or two sentences on what HIRaD does and why it matters.]</p>
+    </div>
+  </section>
+
+  <!-- ===== Abstract ===== -->
+  <section class="abstract" id="abstract">
+    <div class="column">
+      <h2>Abstract</h2>
+      <p>[Abstract goes here.]</p>
+    </div>
+  </section>
+
+  <!-- ===== Contributions (optional, delete the section if unused) ===== -->
+  <section id="contributions">
+    <div class="column">
+      <h2>Contributions</h2>
+      <ul class="contributions">
+        <li>[Contribution one.]</li>
+        <li>[Contribution two.]</li>
+        <li>[Contribution three.]</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Method ===== -->
+  <section id="method">
+    <div class="column">
+      <h2>Method</h2>
+      <p>[Short overview of the pipeline: radar input, latent dynamics, residual, captioner.]</p>
+    </div>
+    <div class="column-wide">
+      <figure>
+        <div class="slot">static/method.png</div>
+        <figcaption><b>Figure 2.</b> [Architecture caption.]</figcaption>
+      </figure>
+    </div>
+    <div class="column">
+      <h3>[Component name]</h3>
+      <p>[A paragraph per key component. Duplicate this h3 + p pair as needed.]</p>
+    </div>
+  </section>
+
+  <!-- ===== Results ===== -->
+  <section id="results">
+    <div class="column">
+      <h2>Results</h2>
+      <p>[One paragraph summarising the main quantitative finding.]</p>
+    </div>
+    <div class="column-wide">
+      <div class="table-scroll">
+        <table>
+          <caption><b>Table 1.</b> [Table caption: dataset, metric direction, how many seeds.]</caption>
+          <thead>
+            <tr><th>Method</th><th>BLEU-4</th><th>ROUGE-L</th><th>CIDEr</th><th>SPICE</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>[Baseline A]</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
+            <tr><td>[Baseline B]</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
+            <tr><td>[Baseline C]</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
+            <tr class="ours"><td>HIRaD (ours)</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figure>
+        <div class="slot short">static/ablation.png (optional second figure)</div>
+        <figcaption><b>Figure 3.</b> [Ablation or analysis caption.]</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===== Qualitative examples =====
+       One <figure class="example"> per clip. Swap the slot for:
+       <video src="static/clips/01.mp4" autoplay loop muted playsinline></video>  or an <img>. -->
+  <section id="examples">
+    <div class="column">
+      <h2>Qualitative examples</h2>
+      <p>[One sentence on what these clips show.]</p>
+    </div>
+    <div class="column-wide">
+      <div class="examples">
+        <figure class="example">
+          <div class="slot short">static/clips/01.mp4</div>
+          <dl>
+            <dt>Ground truth</dt><dd>[Reference caption.]</dd>
+            <dt>HIRaD</dt><dd class="pred">[Predicted caption.]</dd>
+          </dl>
+        </figure>
+        <figure class="example">
+          <div class="slot short">static/clips/02.mp4</div>
+          <dl>
+            <dt>Ground truth</dt><dd>[Reference caption.]</dd>
+            <dt>HIRaD</dt><dd class="pred">[Predicted caption.]</dd>
+          </dl>
+        </figure>
+        <figure class="example">
+          <div class="slot short">static/clips/03.mp4</div>
+          <dl>
+            <dt>Ground truth</dt><dd>[Reference caption.]</dd>
+            <dt>HIRaD</dt><dd class="pred">[Predicted caption.]</dd>
+          </dl>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Video =====
+       Replace the slot with either:
+       <iframe src="https://www.youtube.com/embed/[ID]" title="HIRaD overview video" allowfullscreen></iframe>
+       <video src="static/video.mp4" controls></video> -->
+  <section id="video">
+    <div class="column">
+      <h2>Video</h2>
+    </div>
+    <div class="column-wide">
+      <div class="video-frame">
+        <div class="slot">YouTube embed or static/video.mp4</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BibTeX ===== -->
+  <section id="bibtex">
+    <div class="column">
+      <h2>BibTeX</h2>
+      <div class="bibtex">
+        <button type="button" id="copy-bib">Copy</button>
+<pre><code id="bib">@inproceedings{[key]2026hirad,
+  title     = {HIRaD: [Paper Title]},
+  author    = {[Last, First] and [Last, First] and [Last, First]},
+  booktitle = {[Venue]},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Acknowledgements (optional) ===== -->
+  <section id="acknowledgements">
+    <div class="column">
+      <h2>Acknowledgements</h2>
+      <p>[Funding, compute, and thanks.]</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="column">
+    <p>[Contact: name at institution dot edu]</p>
+    <p>© 2026 [Authors]. Page source on <a href="https://github.com/[user]/[repo]">GitHub</a>.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('copy-bib');
+    var bib = document.getElementById('bib');
+    if (!btn || !bib) return;
+    btn.addEventListener('click', function () {
+      var text = bib.textContent;
+      var done = function () {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        var range = document.createRange();
+        range.selectNodeContents(bib);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = 'Select and copy'; }
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
