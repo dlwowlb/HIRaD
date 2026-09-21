@@ -136,30 +136,7 @@
   /* ---------- Teaser ---------- */
   .teaser { margin: 1.5rem auto 0; }
   .teaser figure { margin: 0; }
-  .teaser-art {
-    background: var(--wash);
-    border-radius: 14px;
-    padding: 1.25rem 1rem 0.5rem;
-  }
-  .teaser-art .prior { stroke: var(--ink-soft); stroke-dasharray: 6 6; }
-  .teaser-art .posterior {
-    stroke: var(--signal);
-    stroke-dasharray: 1400;
-    stroke-dashoffset: 1400;
-    animation: trace 2.2s ease-out 0.3s forwards;
-  }
-  .teaser-art .gap { fill: var(--residual); opacity: 0; animation: reveal 0.8s ease-out 1.9s forwards; }
-  .teaser-art text { font-family: var(--sans); font-size: 15px; fill: var(--ink-soft); }
-  .teaser-art .gap-label { fill: var(--ink); font-weight: 500; opacity: 0; animation: reveal 0.8s ease-out 2.1s forwards; }
-  @keyframes trace { to { stroke-dashoffset: 0; } }
-  @keyframes reveal { to { opacity: var(--to, 1); } }
-  .teaser-art .gap { --to: 0.35; }
-  @media (prefers-reduced-motion: reduce) {
-    .teaser-art .posterior { animation: none; stroke-dashoffset: 0; }
-    .teaser-art .gap { animation: none; opacity: 0.35; }
-    .teaser-art .gap-label { animation: none; opacity: 1; }
-    html { scroll-behavior: auto; }
-  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
   figcaption {
     font-family: var(--sans);
@@ -353,23 +330,10 @@
 
 <main>
 
-  <!-- ===== Teaser =====
-       The SVG below is a stand-in that sketches the core idea (posterior departing from the prior).
-       Replace the whole .teaser-art div with:  <img src="static/teaser.png" alt="...">  -->
+  <!-- ===== Teaser ===== -->
   <div class="teaser column-wide">
     <figure>
-      <div class="teaser-art">
-        <svg viewBox="0 0 880 250" role="img" aria-label="Placeholder sketch: a posterior latent trajectory departs from the predicted prior during a hidden interaction, and the gap between them is the residual.">
-          <path class="gap" d="M300,150 C360,125 400,60 450,55 C510,50 540,120 580,150 C480,110 400,110 300,150 Z"/>
-          <path class="prior" fill="none" stroke-width="2.5" d="M20,150 C120,110 200,190 300,150 C400,110 480,110 580,150 S760,190 860,150"/>
-          <path class="posterior" fill="none" stroke-width="3" stroke-linecap="round" d="M20,150 C120,110 200,190 300,150 C360,125 400,60 450,55 C510,50 540,120 580,150 S760,190 860,150"/>
-          <text class="gap-label" x="440" y="100" text-anchor="middle">residual</text>
-          <text x="20" y="232">predicted (prior)</text>
-          <text x="860" y="232" text-anchor="end">observed (posterior)</text>
-          <line x1="150" y1="227" x2="200" y2="227" class="prior" stroke-width="2.5"/>
-          <line x1="660" y1="227" x2="710" y2="227" stroke="var(--signal)" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-      </div>
+      <img src="static/teaser.png" alt="[Describe the teaser figure in one sentence]">
       <figcaption><b>Figure 1.</b> [Teaser caption: what the reader should take away from this figure.]</figcaption>
     </figure>
   </div>
