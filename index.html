@@ -301,7 +301,7 @@
 <header class="masthead">
   <div class="column-wide">
     <!-- TODO: venue line. Delete this <p> until the paper is public if you prefer. -->
-    <p class="venue">[Venue Year]</p>
+    <p class="venue">NeurIPS 2026</p>
 
     <h1>HIRaD: [Paper Title]</h1>
 
@@ -319,10 +319,10 @@
          (renders as an outlined, unclickable pill), and remove the attribute when it goes live. -->
     <ul class="links">
       <li><a href="static/paper.pdf">Paper</a></li>
-      <li><a href="#" aria-disabled="true">arXiv (coming soon)</a></li>
+      
       <li><a href="https://github.com/[user]/[repo]">Code</a></li>
-      <li><a href="#" aria-disabled="true">Dataset (coming soon)</a></li>
-      <li><a href="#video">Video</a></li>
+      
+      
       <li><a href="#bibtex">BibTeX</a></li>
     </ul>
   </div>
@@ -341,7 +341,7 @@
   <!-- ===== TL;DR ===== -->
   <section>
     <div class="column">
-      <p class="tldr">[TL;DR: one or two sentences on what HIRaD does and why it matters.]</p>
+      <p class="tldr">[TL;DR: HIRaD infers hidden human-object interaction semantics from sparse mmWave radar by modeling observation-driven corrections to predicted body motion, without directly detecting objects.]</p>
     </div>
   </section>
 
@@ -349,7 +349,7 @@
   <section class="abstract" id="abstract">
     <div class="column">
       <h2>Abstract</h2>
-      <p>[Abstract goes here.]</p>
+      <p>Millimeter-wave radar point clouds provide a visually privacy-preserving representation for human motion analysis, but object-related interactions remain difficult to describe because the object evidence that defines the interaction is not always separable or consistently observable in sparse radar returns. We address this problem without direct object detection. Instead, we infer hidden interaction semantics from the temporal structure of observation-conditioned corrections to predicted body motion, motivated by the view that object affordances shape how the body moves. To this end, we propose HIRaD, a radar semantic sensing framework that organizes sparse radar returns into a predictive node-structured latent state of local motion carriers. It represents interaction-relevant cues as corrective residual trajectories between a motion-continuation prior and an observation-conditioned posterior, and compresses these trajectories into a language-aligned semantic bottleneck. A structured prefix conditions a frozen autoregressive language model on both the semantic bottleneck and node-level motion summaries, separating compact interaction-level cues from node-level motion evidence. Experiments show that our proposed method improves radar captioning and interaction understanding under weak object observability over strong baselines, while ablations validate the importance of radar-conditioned prefixing, latent state representation, and residual trajectory modeling.</p>
     </div>
   </section>
 
