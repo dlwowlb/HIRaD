@@ -1,0 +1,7 @@
+torch>=2.1
+numpy
+pyyaml
+tqdm
+transformers>=4.40
+peft>=0.10
+bitsandbytes>=0.43
