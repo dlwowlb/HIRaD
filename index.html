@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- TODO: fill in for search engines and link previews -->
 <title>HIRaD: Hidden Interaction Inference from Predictive Radar Dynamics</title>
-<meta name="description" content="[One-sentence summary of the paper]">
+<meta name="description" content="HIRaD infers hidden human-object interaction semantics from sparse mmWave radar by modeling observation-driven corrections to predicted body motion, without directly detecting objects.">
 <meta property="og:title" content="HIRaD: Hidden Interaction Inference from Predictive Radar Dynamics">
-<meta property="og:description" content="[One-sentence summary of the paper]">
+<meta property="og:description" content="HIRaD infers hidden human-object interaction semantics from sparse mmWave radar by modeling observation-driven corrections to predicted body motion, without directly detecting objects.">
 <meta property="og:image" content="static/teaser.png">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -219,11 +218,15 @@
   th, td { padding: 0.55rem 0.9rem; text-align: right; white-space: nowrap; }
   th:first-child, td:first-child { text-align: left; }
   thead th { font-weight: 600; border-bottom: 1px solid var(--ink); }
+  thead tr.group th { border-bottom: 1px solid var(--rule); font-weight: 500; color: var(--ink-soft); text-align: center; }
+  tbody tr.sep td { border-top: 1px solid var(--rule); }
   tbody tr.ours td {
     border-top: 1px solid var(--rule);
     font-weight: 600;
     box-shadow: inset 3px 0 0 var(--residual);
   }
+  td.check { text-align: center; color: var(--signal); }
+  td.cross { text-align: center; color: var(--ink-soft); }
 
   /* Qualitative examples */
   .examples {
@@ -300,29 +303,22 @@
 
 <header class="masthead">
   <div class="column-wide">
-    <!-- TODO: venue line. Delete this <p> until the paper is public if you prefer. -->
     <p class="venue">NeurIPS 2026</p>
 
     <h1>HIRaD: Hidden Interaction Inference from Predictive Radar Dynamics</h1>
 
-    <!-- TODO: authors. Superscript numbers map to affiliations; * marks equal contribution. -->
     <ul class="authors">
       <li><a href="https://jaekwon-lee.com/">Jaekwon Lee</a><sup>1</sup></li>
-
-
       <li><a href="http://mi.kookmin.ac.kr/#people">Jaekoo Lee</a><sup>†2</sup></li>
     </ul>
     <p class="affiliations"><sup>1</sup>Hansung University &nbsp; <sup>2</sup>Kookmin University</p>
     <p class="notes">† Corresponding author</p>
 
-    <!-- TODO: set href on each link. Keep aria-disabled="true" on anything not yet released
-         (renders as an outlined, unclickable pill), and remove the attribute when it goes live. -->
+    <!-- Set the Code href to the actual repository once it is public.
+         Keep aria-disabled="true" on anything not yet released. -->
     <ul class="links">
       <li><a href="static/paper.pdf">Paper</a></li>
-      
-      <li><a href="https://github.com/[user]/[repo]">Code</a></li>
-      
-      
+      <li><a href="https://github.com/dlwowlb/HIRaD">Code</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
     </ul>
   </div>
@@ -333,12 +329,8 @@
   <!-- ===== Teaser ===== -->
   <div class="teaser column-wide">
     <figure>
-      <img src="static/teaser.png" alt="[Describe the teaser figure in one sentence]">
-      <figcaption><b>Figure 1.</b> Object observability in human–object interaction under different sensing modalities. (a)
-Vision- and (b) LiDAR-based sensing provide relatively reliable observations of the interacted object,
-whereas (c) mmWave Radar-based sensing often preserves human motion but provides unreliable
-object evidence due to sparse and intermittent returns. The point-cloud visualizations in (a) and (b)
-are included only as auxiliary references for comparison.</figcaption>
+      <img src="static/teaser.png" alt="The same human-object interaction seen by a camera, a LiDAR, and a mmWave radar. Only the radar view loses the object while keeping the body motion.">
+      <figcaption><b>Figure 1.</b> Object observability in human–object interaction under different sensing modalities. (a) Vision- and (b) LiDAR-based sensing provide relatively reliable observations of the interacted object, whereas (c) mmWave radar-based sensing often preserves human motion but provides unreliable object evidence due to sparse and intermittent returns. The point-cloud visualizations in (a) and (b) are included only as auxiliary references for comparison.</figcaption>
     </figure>
   </div>
 
@@ -357,14 +349,14 @@ are included only as auxiliary references for comparison.</figcaption>
     </div>
   </section>
 
-  <!-- ===== Contributions (optional, delete the section if unused) ===== -->
+  <!-- ===== Contributions ===== -->
   <section id="contributions">
     <div class="column">
       <h2>Contributions</h2>
       <ul class="contributions">
-        <li>[Contribution one.]</li>
-        <li>[Contribution two.]</li>
-        <li>[Contribution three.]</li>
+        <li>We formulate hidden interaction inference in radar as a constraint-modulated predictive dynamics problem, where object-related cues are inferred from changes in the predictability and temporal structure of body-centric motion.</li>
+        <li>We introduce a predictive node-structured latent state that provides temporally persistent local motion nodes for modeling node-wise predictive update patterns.</li>
+        <li>We propose a semantic bottleneck and structured output interface that combine compact residual-derived cues with node-level motion evidence for language-based interaction description.</li>
       </ul>
     </div>
   </section>
@@ -373,17 +365,26 @@ are included only as auxiliary references for comparison.</figcaption>
   <section id="method">
     <div class="column">
       <h2>Method</h2>
-      <p>[Short overview of the pipeline: radar input, latent dynamics, residual, captioner.]</p>
+      <p>Given a sequence of sparse mmWave radar point clouds, HIRaD infers object-related interaction semantics from body-motion evidence and expresses them as a natural-language description. Rather than attempting to detect or reconstruct the object itself, it uses a predictive body-centric representation to separate expected motion continuation from observation-conditioned updates. The method proceeds in three stages. First, it organizes sparse radar returns into a predictive node-structured latent state whose nodes serve as temporally persistent local motion carriers. Second, it computes observation-supported corrective residuals between a motion-continuation prior and an observation-conditioned posterior. Third, it encodes node-wise residual histories, selects informative nodes using confidence and residual statistics, and compresses the result into a compact semantic token for caption generation.</p>
     </div>
     <div class="column-wide">
       <figure>
-        <div class="slot">static/method.png</div>
-        <figcaption><b>Figure 2.</b> [Architecture caption.]</figcaption>
+        <img src="static/method.png" alt="Overview of HIRaD: radar point clouds are routed into latent nodes, a motion prior is corrected by observations to produce residual trajectories, and the residuals are compressed into a semantic token that conditions a frozen language model together with node tokens.">
+        <figcaption><b>Figure 2.</b> Overview of the HIRaD framework. Sparse radar point clouds are encoded into node-structured latent states. A motion prior is corrected by current observations to produce residual trajectories, which are converted into semantic and motion tokens for caption generation with a frozen language model.</figcaption>
       </figure>
     </div>
     <div class="column">
-      <h3>[Component name]</h3>
-      <p>[A paragraph per key component. Duplicate this h3 + p pair as needed.]</p>
+      <h3>Predictive node-structured latent state</h3>
+      <p>Radar points are routed to a small set of latent nodes by masked multi-head routing attention. These nodes are not supervised anatomical landmarks. They are latent motion carriers encouraged by routing and temporal persistence to capture local motion patterns over time. A temporal transition model predicts how each node should evolve from past posterior states only, producing a motion-continuation prior before the current frame is seen. The current radar evidence then updates this prior through a confidence-aware posterior update, where a routing-derived gate controls how strongly each node is revised.</p>
+
+      <h3>Hidden interaction as corrective residuals</h3>
+      <p>The corrective residual of a node is the difference between its posterior and prior means. Because the prior is computed before the current frame is accessed, this residual reflects an observation-driven update to predicted motion rather than a re-encoding of the current point cloud. A large residual can also arise from fast free motion, landing, or radar sparsity, so the residual is never used as a standalone interaction score. Instead, residual histories are encoded over time and combined with node confidence and motion summaries before caption generation.</p>
+
+      <h3>Language-aligned semantic bottleneck</h3>
+      <p>Each node's residual history is encoded by a shared temporal convolutional encoder. Node-level attention, conditioned on both the residual code and observation-support statistics, selects informative nodes, and the selected code is fused with a global radar summary and projected into a normalized language-aligned embedding. This bottleneck is trained with a contrastive alignment loss against caption-level language embeddings.</p>
+
+      <h3>Structured prefix for a frozen language model</h3>
+      <p>A frozen decoder-only language model (Qwen3-8B with QLoRA adapters) is conditioned through a structured prefix that contains a task prompt, one semantic token derived from the bottleneck, and node tokens projected from node-level motion summaries. The semantic token carries the interaction-level summary, while node tokens retain motion grounding. Node tokens are randomly dropped during training so that the decoder cannot rely on fine-grained motion tokens alone.</p>
     </div>
   </section>
 
@@ -391,77 +392,78 @@ are included only as auxiliary references for comparison.</figcaption>
   <section id="results">
     <div class="column">
       <h2>Results</h2>
-      <p>[One paragraph summarising the main quantitative finding.]</p>
+      <p>We evaluate end-to-end radar captioning on a synthetic radar–caption corpus of 10,000 clips and on a real benchmark of 420 radar clips (180 directly collected clips with physical objects and 240 object-absent clips from mRI). No real clip is used for training or model selection. HIRaD is compared against radar-driven (RD), skeleton-driven (SD), and video-driven (VD) baselines under a standardized two-stage protocol in which all captioning baselines are fine-tuned on the same training split and share the same frozen Qwen3-8B decoder. On synthetic data HIRaD improves CIDEr from 4.3 to 7.2 over RadarLLM, and on real data from 2.2 to 4.8, while also obtaining the highest SPICE, object sub-score, and object-presence balanced accuracy.</p>
     </div>
     <div class="column-wide">
       <div class="table-scroll">
         <table>
-          <caption><b>Table 1.</b> [Table caption: dataset, metric direction, how many seeds.]</caption>
+          <caption><b>Table 1.</b> Main comparison on synthetic and real radar captioning. Mean over three random seeds. Higher is better for all metrics. SD baselines are skeleton-derived, VD baselines are video-derived, and RD baselines operate directly on radar point clouds.</caption>
           <thead>
-            <tr><th>Method</th><th>BLEU-4</th><th>ROUGE-L</th><th>CIDEr</th><th>SPICE</th></tr>
+            <tr class="group"><th></th><th colspan="4">Synthetic captioning</th><th colspan="4">Real captioning</th></tr>
+            <tr><th>Method</th><th>CIDEr</th><th>METEOR</th><th>R-1</th><th>B-1</th><th>CIDEr</th><th>METEOR</th><th>R-1</th><th>B-1</th></tr>
           </thead>
           <tbody>
-            <tr><td>[Baseline A]</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
-            <tr><td>[Baseline B]</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
-            <tr><td>[Baseline C]</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
-            <tr class="ours"><td>HIRaD (ours)</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
+            <tr><td>MotionGPT (SD)</td><td>3.8</td><td>16.1</td><td>42.8</td><td>41.3</td><td>1.2</td><td>12.7</td><td>28.3</td><td>27.7</td></tr>
+            <tr><td>AvatarGPT (SD)</td><td>3.9</td><td>16.6</td><td>43.1</td><td>42.5</td><td>1.1</td><td>13.4</td><td>29.2</td><td>31.7</td></tr>
+            <tr class="sep"><td>Video-LLaMA3 (VD)</td><td>3.3</td><td>15.6</td><td>40.8</td><td>38.8</td><td>0.9</td><td>11.6</td><td>37.4</td><td>32.7</td></tr>
+            <tr><td>Video-LLaVA (VD)</td><td>3.1</td><td>15.4</td><td>41.1</td><td>36.6</td><td>0.7</td><td>11.2</td><td>30.2</td><td>30.6</td></tr>
+            <tr><td>Qwen2.5-VL (VD)</td><td>2.1</td><td>14.6</td><td>37.7</td><td>35.4</td><td>1.3</td><td>13.4</td><td>33.7</td><td>31.5</td></tr>
+            <tr><td>InternVL-2.5 (VD)</td><td>2.2</td><td>15.5</td><td>40.8</td><td>36.6</td><td>0.3</td><td>11.0</td><td>24.1</td><td>19.6</td></tr>
+            <tr class="sep"><td>RadarLLM (RD)</td><td>4.3</td><td>16.4</td><td>42.7</td><td>42.4</td><td>2.2</td><td>13.8</td><td>35.4</td><td>33.5</td></tr>
+            <tr class="ours"><td>HIRaD (ours)</td><td>7.2</td><td>18.5</td><td>43.8</td><td>45.5</td><td>4.8</td><td>16.5</td><td>41.1</td><td>35.9</td></tr>
           </tbody>
         </table>
       </div>
-      <figure>
-        <div class="slot short">static/ablation.png (optional second figure)</div>
-        <figcaption><b>Figure 3.</b> [Ablation or analysis caption.]</figcaption>
-      </figure>
+
+      <div class="table-scroll">
+        <table>
+          <caption><b>Table 2.</b> Interaction benchmark. SPICE, its object sub-score (Obj), and object-presence balanced accuracy (BAcc) measure whether generated captions preserve interaction-level semantics. Mean over three random seeds.</caption>
+          <thead>
+            <tr class="group"><th></th><th colspan="3">Synthetic interaction</th><th colspan="3">Real interaction</th></tr>
+            <tr><th>Method</th><th>SPICE</th><th>Obj</th><th>BAcc</th><th>SPICE</th><th>Obj</th><th>BAcc</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>MotionGPT (SD)</td><td>24.0</td><td>16.8</td><td>58.7</td><td>18.2</td><td>16.2</td><td>53.1</td></tr>
+            <tr><td>AvatarGPT (SD)</td><td>30.5</td><td>28.3</td><td>72.0</td><td>22.3</td><td>20.8</td><td>63.4</td></tr>
+            <tr class="sep"><td>Video-LLaMA3 (VD)</td><td>18.2</td><td>16.0</td><td>56.6</td><td>19.4</td><td>17.1</td><td>49.1</td></tr>
+            <tr><td>Video-LLaVA (VD)</td><td>17.1</td><td>14.6</td><td>62.2</td><td>14.1</td><td>13.1</td><td>46.1</td></tr>
+            <tr><td>Qwen2.5-VL (VD)</td><td>17.7</td><td>16.6</td><td>53.1</td><td>13.8</td><td>12.7</td><td>43.7</td></tr>
+            <tr><td>InternVL-2.5 (VD)</td><td>12.6</td><td>12.6</td><td>54.3</td><td>12.9</td><td>14.6</td><td>42.4</td></tr>
+            <tr class="sep"><td>RadarLLM (RD)</td><td>33.5</td><td>31.2</td><td>62.5</td><td>20.3</td><td>19.1</td><td>58.9</td></tr>
+            <tr class="ours"><td>HIRaD (ours)</td><td>41.7</td><td>40.4</td><td>72.9</td><td>29.9</td><td>27.6</td><td>65.3</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <caption><b>Table 3.</b> Ablation on the synthetic test split. Removing the radar prefix causes the largest drop, while latent tokens, motion supervision, and residual trajectories progressively improve CIDEr, SPICE, and Obj. Variant (2) replaces our latent graph with the VQ-VAE-style codebook encoder used by RadarLLM.</caption>
+          <thead>
+            <tr><th>Variant</th><th>Prefix</th><th>Codebook</th><th>Latent</th><th>Residual</th><th>Motion</th><th>CIDEr</th><th>SPICE</th><th>Obj</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>(1) No radar prefix</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td>0.8</td><td>13.3</td><td>11.5</td></tr>
+            <tr><td>(2) Codebook encoder</td><td class="check">✓</td><td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td><td>4.3</td><td>33.5</td><td>31.2</td></tr>
+            <tr><td>(3) w/o motion supervision</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="cross">✗</td><td>4.9</td><td>37.9</td><td>36.2</td></tr>
+            <tr><td>(4) w/o residual trajectory</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td>6.0</td><td>38.5</td><td>37.4</td></tr>
+            <tr class="ours"><td>(5) Full (ours)</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td>7.2</td><td>41.7</td><td>40.4</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
-  <!-- ===== Qualitative examples =====
-       One <figure class="example"> per clip. Swap the slot for:
-       <video src="static/clips/01.mp4" autoplay loop muted playsinline></video>  or an <img>. -->
+  <!-- ===== Qualitative examples ===== -->
   <section id="examples">
     <div class="column">
       <h2>Qualitative examples</h2>
-      <p>[One sentence on what these clips show.]</p>
+      <p>HIRaD often recovers object-involving interactions from body-motion dynamics even when object evidence in the radar point cloud is weak, intermittent, or absent. Object-involving motions show clearly different residual trajectories from free motion. Fine-grained object identity remains challenging, especially when different objects induce similar motions.</p>
     </div>
     <div class="column-wide">
-      <div class="examples">
-        <figure class="example">
-          <div class="slot short">static/clips/01.mp4</div>
-          <dl>
-            <dt>Ground truth</dt><dd>[Reference caption.]</dd>
-            <dt>HIRaD</dt><dd class="pred">[Predicted caption.]</dd>
-          </dl>
-        </figure>
-        <figure class="example">
-          <div class="slot short">static/clips/02.mp4</div>
-          <dl>
-            <dt>Ground truth</dt><dd>[Reference caption.]</dd>
-            <dt>HIRaD</dt><dd class="pred">[Predicted caption.]</dd>
-          </dl>
-        </figure>
-        <figure class="example">
-          <div class="slot short">static/clips/03.mp4</div>
-          <dl>
-            <dt>Ground truth</dt><dd>[Reference caption.]</dd>
-            <dt>HIRaD</dt><dd class="pred">[Predicted caption.]</dd>
-          </dl>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Video =====
-       Replace the slot with either:
-       <iframe src="https://www.youtube.com/embed/[ID]" title="HIRaD overview video" allowfullscreen></iframe>
-       <video src="static/video.mp4" controls></video> -->
-  <section id="video">
-    <div class="column">
-      <h2>Video</h2>
-    </div>
-    <div class="column-wide">
-      <div class="video-frame">
-        <div class="slot">YouTube embed or static/video.mp4</div>
-      </div>
+      <figure>
+        <img src="static/qualitative.png" alt="Four radar clips with their residual trajectories and captions from the ground truth, baselines, and HIRaD: kicking a ball, turning a stroller, walking forward and turning, and lifting a dumbbell.">
+        <figcaption><b>Figure 3.</b> Qualitative examples. (a) and (b) show object-involving actions and their corresponding residual trajectories, and (c) shows a free-motion example for comparison. Compared with free motion, object-involving motion exhibits clearly different residual patterns, suggesting that the residual signal captures interaction-related motion cues beyond raw motion alone. (d) shows a similar tendency, although fine-grained object identity is not always correctly recognized.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -471,21 +473,21 @@ are included only as auxiliary references for comparison.</figcaption>
       <h2>BibTeX</h2>
       <div class="bibtex">
         <button type="button" id="copy-bib">Copy</button>
-<pre><code id="bib">@inproceedings{[key]2026hirad,
-  title     = {HIRaD: [Paper Title]},
-  author    = {[Last, First] and [Last, First] and [Last, First]},
-  booktitle = {[Venue]},
+<pre><code id="bib">@inproceedings{lee2026hirad,
+  title     = {{HIRaD}: Hidden Interaction Inference from Predictive Radar Dynamics},
+  author    = {Lee, Jaekwon and Lee, Jaekoo},
+  booktitle = {Advances in Neural Information Processing Systems},
   year      = {2026}
 }</code></pre>
       </div>
     </div>
   </section>
 
-  <!-- ===== Acknowledgements (optional) ===== -->
+  <!-- ===== Acknowledgements ===== -->
   <section id="acknowledgements">
     <div class="column">
       <h2>Acknowledgements</h2>
-      <p>[Funding, compute, and thanks.]</p>
+      <p>This work was supported by the Institute of Information &amp; Communications Technology Planning &amp; Evaluation (IITP) grants funded by the Korea government (MSIT): RS-2024-00357879 (AI-based Biosignal Fusion and Generation Technology for Intelligent Personalized Chronic Disease Management), RS-2025-02219317 (AI Star Fellowship, Kookmin University), and IITP-2024-RS-2024-00417958 (Global Research Support Program in the Digital Field), and by the National Research Foundation of Korea (NRF) grant funded by the Korea government (MSIT) (RS-2026-25522067). This work was also supported by the AI Seoul Tech Research Support Program of the Seoul Future Foundation.</p>
     </div>
   </section>
 
@@ -493,8 +495,8 @@ are included only as auxiliary references for comparison.</figcaption>
 
 <footer>
   <div class="column">
-    <p>[Contact: name at institution dot edu]</p>
-    <p>© 2026 [Authors]. Page source on <a href="https://github.com/[user]/[repo]">GitHub</a>.</p>
+    <p>Contact: dlwowlb at hansung dot ac dot kr</p>
+    <p>© 2026 Jaekwon Lee and Jaekoo Lee. Page source on <a href="https://github.com/dlwowlb/HIRaD">GitHub</a>.</p>
   </div>
 </footer>
 
