@@ -13,288 +13,165 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --paper: #FBFCFD;
-    --ink: #14213D;
-    --ink-soft: #4A5670;
-    --rule: #DDE4EA;
-    --wash: #F0F4F7;
-    --signal: #0E7C7B;      /* radar teal: links, posterior curve */
-    --residual: #E8A33D;    /* amber: the deviation, "ours" row */
-    --serif: "STIX Two Text", "Times New Roman", Times, serif;
-    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --bg: #FAFBFC;
+    --ink: #1C2128;
+    --ink-2: #5A6471;
+    --ink-3: #8A94A1;
+    --rule: #E4E8ED;
+    --wash: #F1F3F6;
+    --accent: #0F6E8C;
+    --accent-wash: #E6F1F5;
+    --font: "Public Sans", "Helvetica Neue", Arial, sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    --measure: 46rem;
-    --wide: 60rem;
+    --measure: 42rem;
+    --wide: 58rem;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --paper: #0F1729;
-      --ink: #E9EEF5;
-      --ink-soft: #9FACC2;
-      --rule: #27334A;
-      --wash: #17223A;
-      --signal: #4FC4C1;
-      --residual: #F0B75E;
+      --bg: #111419;
+      --ink: #E8ECF1;
+      --ink-2: #A3ADB9;
+      --ink-3: #6E7884;
+      --rule: #262C35;
+      --wash: #181D24;
+      --accent: #5FB3CF;
+      --accent-wash: #15262E;
     }
   }
 
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     margin: 0;
-    background: var(--paper);
+    background: var(--bg);
     color: var(--ink);
-    font-family: var(--serif);
-    font-size: 1.125rem;
-    line-height: 1.7;
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings: "tnum" 1;
     -webkit-font-smoothing: antialiased;
   }
-  img, video, svg { max-width: 100%; display: block; }
-  a { color: var(--signal); text-underline-offset: 0.18em; }
-  a:focus-visible, button:focus-visible {
-    outline: 2px solid var(--signal);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
+  img, svg { max-width: 100%; display: block; }
+  a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 1.5px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  p { margin: 0 0 1rem; }
 
-  .column { width: min(100% - 2.5rem, var(--measure)); margin-inline: auto; }
-  .column-wide { width: min(100% - 2.5rem, var(--wide)); margin-inline: auto; }
+  /* text and figures share one left edge; text is capped at a readable measure */
+  .column, .column-wide { width: min(100% - 2.5rem, var(--wide)); margin-inline: auto; }
+  .column > * { max-width: var(--measure); }
 
-  /* ---------- Header ---------- */
-  .masthead { padding: 4.5rem 0 2.5rem; text-align: center; }
-  .venue {
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--ink-soft);
-    margin: 0 0 1.25rem;
-  }
+  /* header */
+  .masthead { padding: 5rem 0 2.5rem; }
+  .venue { font-size: 0.9375rem; color: var(--ink-2); margin: 0 0 1.25rem; }
   h1 {
-    font-family: var(--serif);
     font-weight: 600;
-    font-size: clamp(2rem, 5vw, 3.1rem);
+    font-size: clamp(1.9rem, 4.2vw, 2.75rem);
     line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin: 0 auto 1.75rem;
-    max-width: 22em;
-    text-wrap: balance;
+    letter-spacing: -0.022em;
+    margin: 0 0 1rem;
+    max-width: 20em;
   }
-  .authors {
-    list-style: none;
-    margin: 0 0 0.5rem;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25rem 1.5rem;
-    font-size: 1.15rem;
+  .subtitle {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 34em;
+    margin: 0 0 2rem;
   }
+  .authors { list-style: none; margin: 0 0 0.3rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 1.5rem; font-size: 1.0625rem; }
   .authors a { color: var(--ink); text-decoration-color: var(--rule); }
-  .authors a:hover { text-decoration-color: var(--signal); }
-  .authors sup, .affiliations sup { font-family: var(--sans); font-size: 0.7em; color: var(--ink-soft); }
-  .affiliations, .notes {
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    color: var(--ink-soft);
-    margin: 0.25rem 0;
-  }
+  .authors a:hover { text-decoration-color: var(--accent); }
+  .authors sup, .affiliations sup { font-size: 0.7em; color: var(--ink-3); }
+  .affiliations, .notes { font-size: 0.9375rem; color: var(--ink-2); margin: 0.2rem 0; }
 
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.6rem;
-    margin: 2rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
+  .links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.75rem 0 0; padding: 0; list-style: none; }
   .links a {
     display: inline-block;
-    font-family: var(--sans);
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 0.55rem 1.2rem;
-    border-radius: 999px;
-    border: 1px solid var(--ink);
-  }
-  .links a:hover { background: var(--signal); border-color: var(--signal); }
-  .links a[aria-disabled="true"] {
+    color: var(--ink);
+    border: 1px solid var(--rule);
     background: transparent;
-    color: var(--ink-soft);
-    border-color: var(--rule);
-    pointer-events: none;
+    padding: 0.45rem 0.95rem;
+    border-radius: 6px;
   }
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* ---------- Teaser ---------- */
-  .teaser { margin: 1.5rem auto 0; }
-  .teaser figure { margin: 0; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-
-  figcaption {
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    margin-top: 0.9rem;
-    text-align: left;
-  }
+  /* figures */
+  figure { margin: 1.5rem 0 0; }
+  figure img { width: 100%; border-radius: 6px; }
+  figcaption { font-size: 0.9rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.75rem; }
   figcaption b { color: var(--ink); font-weight: 600; }
+  .teaser { margin-top: 0.5rem; }
 
-  /* ---------- Sections ---------- */
-  main section { padding: 3.25rem 0 0; }
-  h2 {
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: 1.7rem;
-    line-height: 1.25;
-    margin: 0 0 1rem;
-  }
-  h3 {
-    font-family: var(--sans);
-    font-weight: 600;
-    font-size: 1.05rem;
-    margin: 2rem 0 0.5rem;
-  }
-  p { margin: 0 0 1.1rem; }
-  .abstract p { text-align: justify; hyphens: auto; }
+  /* sections */
+  main section { padding: 3.5rem 0 0; }
+  h2 { font-weight: 600; font-size: 1.375rem; line-height: 1.3; letter-spacing: -0.012em; margin: 0 0 0.9rem; }
+  h3 { font-weight: 600; font-size: 1.0625rem; margin: 1.75rem 0 0.4rem; }
+  .abstract p { hyphens: auto; }
 
-  .tldr {
-    font-size: 1.3rem;
-    line-height: 1.5;
-    font-style: italic;
-    text-align: center;
-    text-wrap: balance;
-    margin: 0;
-  }
+  .contributions { padding-left: 1.2rem; margin: 0; }
+  .contributions li { margin-bottom: 0.55rem; padding-left: 0.2rem; }
+  .contributions li::marker { color: var(--ink-3); }
 
-  /* Media slots: replace the inner .slot div with <img> or <video> */
-  .slot {
-    display: grid;
-    place-items: center;
-    min-height: 16rem;
-    padding: 1.5rem;
-    border: 1.5px dashed var(--rule);
-    border-radius: 12px;
-    background: var(--wash);
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    color: var(--ink-soft);
-    text-align: center;
-  }
-  .slot.short { min-height: 10rem; }
-  figure { margin: 1.75rem 0 0; }
-  figure img, figure video { border-radius: 12px; width: 100%; }
-
-  /* Contributions */
-  .contributions { padding-left: 1.3rem; margin: 0; }
-  .contributions li { margin-bottom: 0.6rem; padding-left: 0.3rem; }
-  .contributions li::marker { color: var(--signal); }
-
-  /* Results table */
+  /* tables */
   .table-scroll { overflow-x: auto; margin-top: 1.5rem; }
   table {
     width: 100%;
     border-collapse: collapse;
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    font-variant-numeric: tabular-nums;
-    border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
-  }
-  caption {
-    caption-side: bottom;
-    text-align: left;
-    color: var(--ink-soft);
     font-size: 0.9rem;
-    padding-top: 0.75rem;
+    line-height: 1.4;
+    border-bottom: 1px solid var(--rule);
   }
-  th, td { padding: 0.55rem 0.9rem; text-align: right; white-space: nowrap; }
-  th:first-child, td:first-child { text-align: left; }
-  thead th { font-weight: 600; border-bottom: 1px solid var(--ink); }
-  thead tr.group th { border-bottom: 1px solid var(--rule); font-weight: 500; color: var(--ink-soft); text-align: center; }
+  caption { caption-side: bottom; text-align: left; color: var(--ink-2); font-size: 0.875rem; line-height: 1.5; padding-top: 0.7rem; }
+  caption b { color: var(--ink); font-weight: 600; }
+  th, td { padding: 0.5rem 0.8rem; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; padding-left: 0.6rem; }
+  thead th { font-weight: 500; color: var(--ink-2); border-bottom: 1px solid var(--ink); }
+  thead tr.group th { border-bottom: 0; text-align: center; color: var(--ink-3); font-size: 0.8125rem; padding-bottom: 0.1rem; }
   tbody tr.sep td { border-top: 1px solid var(--rule); }
-  tbody tr.ours td {
-    border-top: 1px solid var(--rule);
-    font-weight: 600;
-    box-shadow: inset 3px 0 0 var(--residual);
-  }
-  td.check { text-align: center; color: var(--signal); }
-  td.cross { text-align: center; color: var(--ink-soft); }
+  tbody tr.ours td { font-weight: 600; background: var(--accent-wash); border-top: 1px solid var(--rule); }
+  tbody tr.ours td:first-child { border-radius: 4px 0 0 4px; }
+  tbody tr.ours td:last-child { border-radius: 0 4px 4px 0; }
+  td.check { text-align: center; color: var(--ink); }
+  td.cross { text-align: center; color: var(--ink-3); }
 
-  /* Qualitative examples */
-  .examples {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-    gap: 1.75rem 1.5rem;
-    margin-top: 1.5rem;
-  }
-  .example { margin: 0; }
-  .example dl {
-    margin: 0.85rem 0 0;
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-  .example dt { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.6rem; }
-  .example dd { margin: 0.1rem 0 0; }
-  .example dd.pred { border-left: 3px solid var(--residual); padding-left: 0.6rem; }
-
-  /* Video */
-  .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--wash); }
-  .video-frame iframe, .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  .video-frame .slot { position: absolute; inset: 0; min-height: 0; border-radius: 12px; }
-
-  /* BibTeX */
-  .bibtex { position: relative; margin-top: 1rem; }
+  /* bibtex */
+  .bibtex { position: relative; margin-top: 0.75rem; }
   .bibtex pre {
     margin: 0;
-    padding: 1.25rem 1.25rem;
+    padding: 1.1rem 1.2rem;
     background: var(--wash);
-    border-radius: 12px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
     overflow-x: auto;
     font-family: var(--mono);
-    font-size: 0.85rem;
+    font-size: 0.8125rem;
     line-height: 1.6;
   }
   .bibtex button {
-    position: absolute;
-    top: 0.7rem;
-    right: 0.7rem;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    padding: 0.3rem 0.9rem;
-    cursor: pointer;
+    position: absolute; top: 0.6rem; right: 0.6rem;
+    font-family: var(--font); font-size: 0.8125rem; font-weight: 500;
+    color: var(--ink-2); background: var(--bg);
+    border: 1px solid var(--rule); border-radius: 5px;
+    padding: 0.25rem 0.7rem; cursor: pointer;
   }
-  .bibtex button:hover { border-color: var(--signal); color: var(--signal); }
+  .bibtex button:hover { border-color: var(--accent); color: var(--accent); }
 
-  footer {
-    margin-top: 4.5rem;
-    padding: 2rem 0 3rem;
-    border-top: 1px solid var(--rule);
-    font-family: var(--sans);
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-    text-align: center;
-  }
-  footer p { margin: 0.3rem 0; }
+  footer { margin-top: 4.5rem; padding: 1.75rem 0 3rem; border-top: 1px solid var(--rule); font-size: 0.875rem; color: var(--ink-2); }
+  footer p { margin: 0.25rem 0; }
 
   @media (max-width: 40rem) {
-    body { font-size: 1.05rem; }
+    body { font-size: 1rem; }
     .masthead { padding-top: 3rem; }
-    .tldr { font-size: 1.15rem; }
-    .abstract p { text-align: left; }
+    .subtitle { font-size: 1.0625rem; }
   }
 </style>
 </head>
@@ -304,8 +181,8 @@
 <header class="masthead">
   <div class="column-wide">
     <p class="venue">NeurIPS 2026</p>
-
     <h1>HIRaD: Hidden Interaction Inference from Predictive Radar Dynamics</h1>
+    <p class="subtitle">Inferring hidden human–object interactions from sparse mmWave radar by reading how observations correct predicted body motion, without detecting the object.</p>
 
     <ul class="authors">
       <li><a href="https://jaekwon-lee.com/">Jaekwon Lee</a><sup>1</sup></li>
@@ -314,8 +191,6 @@
     <p class="affiliations"><sup>1</sup>Hansung University &nbsp; <sup>2</sup>Kookmin University</p>
     <p class="notes">† Corresponding author</p>
 
-    <!-- Set the Code href to the actual repository once it is public.
-         Keep aria-disabled="true" on anything not yet released. -->
     <ul class="links">
       <li><a href="https://neurips.cc/virtual/2026/loc/sydney/poster/154068">Paper</a></li>
       <li><a href="https://github.com/dlwowlb/HIRaD">Code</a></li>
@@ -326,7 +201,6 @@
 
 <main>
 
-  <!-- ===== Teaser ===== -->
   <div class="teaser column-wide">
     <figure>
       <img src="static/teaser.png" alt="The same human-object interaction seen by a camera, a LiDAR, and a mmWave radar. Only the radar view loses the object while keeping the body motion.">
@@ -334,14 +208,6 @@
     </figure>
   </div>
 
-  <!-- ===== TL;DR ===== -->
-  <section>
-    <div class="column">
-      <p class="tldr">TL;DR: HIRaD infers hidden human-object interaction semantics from sparse mmWave radar by modeling observation-driven corrections to predicted body motion, without directly detecting objects.</p>
-    </div>
-  </section>
-
-  <!-- ===== Abstract ===== -->
   <section class="abstract" id="abstract">
     <div class="column">
       <h2>Abstract</h2>
@@ -349,7 +215,6 @@
     </div>
   </section>
 
-  <!-- ===== Contributions ===== -->
   <section id="contributions">
     <div class="column">
       <h2>Contributions</h2>
@@ -361,7 +226,6 @@
     </div>
   </section>
 
-  <!-- ===== Method ===== -->
   <section id="method">
     <div class="column">
       <h2>Method</h2>
@@ -388,7 +252,6 @@
     </div>
   </section>
 
-  <!-- ===== Results ===== -->
   <section id="results">
     <div class="column">
       <h2>Results</h2>
@@ -442,18 +305,17 @@
             <tr><th>Variant</th><th>Prefix</th><th>Codebook</th><th>Latent</th><th>Residual</th><th>Motion</th><th>CIDEr</th><th>SPICE</th><th>Obj</th></tr>
           </thead>
           <tbody>
-            <tr><td>(1) No radar prefix</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td>0.8</td><td>13.3</td><td>11.5</td></tr>
-            <tr><td>(2) Codebook encoder</td><td class="check">✓</td><td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td><td>4.3</td><td>33.5</td><td>31.2</td></tr>
-            <tr><td>(3) w/o motion supervision</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="cross">✗</td><td>4.9</td><td>37.9</td><td>36.2</td></tr>
-            <tr><td>(4) w/o residual trajectory</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td>6.0</td><td>38.5</td><td>37.4</td></tr>
-            <tr class="ours"><td>(5) Full (ours)</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td>7.2</td><td>41.7</td><td>40.4</td></tr>
+            <tr><td>(1) No radar prefix</td><td class="cross">–</td><td class="cross">–</td><td class="cross">–</td><td class="cross">–</td><td class="cross">–</td><td>0.8</td><td>13.3</td><td>11.5</td></tr>
+            <tr><td>(2) Codebook encoder</td><td class="check">✓</td><td class="check">✓</td><td class="cross">–</td><td class="cross">–</td><td class="check">✓</td><td>4.3</td><td>33.5</td><td>31.2</td></tr>
+            <tr><td>(3) w/o motion supervision</td><td class="check">✓</td><td class="cross">–</td><td class="check">✓</td><td class="check">✓</td><td class="cross">–</td><td>4.9</td><td>37.9</td><td>36.2</td></tr>
+            <tr><td>(4) w/o residual trajectory</td><td class="check">✓</td><td class="cross">–</td><td class="check">✓</td><td class="cross">–</td><td class="check">✓</td><td>6.0</td><td>38.5</td><td>37.4</td></tr>
+            <tr class="ours"><td>(5) Full (ours)</td><td class="check">✓</td><td class="cross">–</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td>7.2</td><td>41.7</td><td>40.4</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- ===== Qualitative examples ===== -->
   <section id="examples">
     <div class="column">
       <h2>Qualitative examples</h2>
@@ -467,7 +329,6 @@
     </div>
   </section>
 
-  <!-- ===== BibTeX ===== -->
   <section id="bibtex">
     <div class="column">
       <h2>BibTeX</h2>
@@ -482,8 +343,6 @@
       </div>
     </div>
   </section>
-
- 
 
 </main>
 
